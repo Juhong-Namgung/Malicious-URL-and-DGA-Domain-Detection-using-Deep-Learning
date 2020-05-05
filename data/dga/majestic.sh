@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Get ONINT BAMBENEK CONSULTING
+# Get MAJESTIC MILLION
 wget -q --show-progress http://downloads.majestic.com/majestic_million.csv
 
 # Finished
