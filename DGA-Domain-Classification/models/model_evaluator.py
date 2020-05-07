@@ -20,21 +20,21 @@ class Evaluator:
     '''
 
     @staticmethod
-    def precision(self, y_true, y_pred):
+    def precision(y_true, y_pred):
         true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
         predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
         precision = true_positives / (predicted_positives + K.epsilon())
         return precision
 
     @staticmethod
-    def recall(self, y_true, y_pred):
+    def recall(y_true, y_pred):
         true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
         possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
         recall = true_positives / (possible_positives + K.epsilon())
         return recall
 
     @staticmethod
-    def fbeta_score(self, y_true, y_pred, beta=1):
+    def fbeta_score(y_true, y_pred, beta=1):
         if beta < 0:
             raise ValueError('The lowest choosable beta is zero (only precision).')
 
@@ -42,18 +42,18 @@ class Evaluator:
         if K.sum(K.round(K.clip(y_true, 0, 1))) == 0:
 
             return 0
-        p = Evaluator.precision(self, y_true, y_pred)
-        r = Evaluator.recall(self, y_true, y_pred)
+        p = Evaluator.precision(y_true, y_pred)
+        r = Evaluator.recall(y_true, y_pred)
         bb = beta ** 2
         fbeta_score = (1 + bb) * (p * r) / (bb * p + r + K.epsilon())
         return fbeta_score
 
     @staticmethod
-    def fmeasure(self, y_true, y_pred):
-        return Evaluator.fbeta_score(self, y_true, y_pred, beta=1)
+    def fmeasure(y_true, y_pred):
+        return Evaluator.fbeta_score(y_true, y_pred, beta=1)
 
     @staticmethod
-    def plot_validation_curves(self, model_name, history):
+    def plot_validation_curves(model_name, history):
         """Save validation curves(.png format) """
 
         history_dict = history.history
@@ -78,7 +78,7 @@ class Evaluator:
 
 
     @staticmethod
-    def print_validation_report(self, history):
+    def print_validation_report(history):
         """Print validation history """
         history_dict = history.history
 
@@ -87,7 +87,7 @@ class Evaluator:
                 print('[' + key + '] '+ str(history_dict[key]))
 
     @staticmethod
-    def calculate_measure(self, model, x_test, y_test):
+    def calculate_measure(model, x_test, y_test):
         """Calculate measure(categorical accuracy, precision, recall, F1-score) """
 
         y_pred_class_prob = model.predict(x_test, batch_size=64)
@@ -102,7 +102,7 @@ class Evaluator:
         print("F1" , metrics.f1_score(y_true_class, y_pred_class, average='weighted'))
 
     @staticmethod
-    def plot_confusion_matrix(self, model_name, y_true, y_pred,
+    def plot_confusion_matrix(model_name, y_true, y_pred,
                               classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14, 15, 16, 17, 18, 19, 20],
                                normalize=False,
                                title=None,

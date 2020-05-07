@@ -12,7 +12,7 @@ class Preprocessor:
         pass
 
     @staticmethod
-    def load_data(__self__):
+    def load_data():
         """ Load and pre-process data.
 
         1) Load data from dir
