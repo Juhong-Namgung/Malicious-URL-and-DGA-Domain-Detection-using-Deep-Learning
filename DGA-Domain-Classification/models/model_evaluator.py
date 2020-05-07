@@ -5,19 +5,22 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from datetime import datetime
 
+
 class Evaluator:
     def __init__(self):
-        self.id = 1
+        pass
 
-    # save validation curves(.png format)
+    @staticmethod
     def plot_validation_curves(self, model_name, history):
+        """Save validation curves(.png format) """
+
         history_dict = history.history
         print(history_dict.keys())
 
         # validation curves
         epochs = range(1, len(history_dict['loss']) + 1)
         # "bo" is for "blue dot"
-        plt.plot(epochs, history_dict['val_fmeasure'], 'r',label='f1')
+        plt.plot(epochs, history_dict['val_fmeasure'], 'r',label='F1')
         plt.plot(epochs, history_dict['val_precision'], 'g',label='precision')
         plt.plot(epochs, history_dict['val_recall'], 'k',label='recall')
         plt.plot(epochs, history_dict['val_categorical_accuracy'], 'c', label='categorical_accuracy')
@@ -27,55 +30,47 @@ class Evaluator:
         plt.legend(loc='lower right')
         #plt.show()
         now = datetime.now()
-        nowDatetime = now.strftime('%Y_%m_%d-%H%M%S')
+        now_datetime = now.strftime('%Y_%m_%d-%H%M%S')
 
-        plt.savefig('./result/' + model_name + '_val_curve_' + nowDatetime + '.png')
+        plt.savefig('./result/' + model_name + '_val_curve_' + now_datetime + '.png')
 
-    # print validation
+
+    @staticmethod
     def print_validation_report(self, history):
-            history_dict = history.history
+        """Print validation history """
+        history_dict = history.history
 
-            for key in history_dict:
-                if "val" in key:
-                    print('[' + key + '] '+ str(history_dict[key]))
+        for key in history_dict:
+            if "val" in key:
+                print('[' + key + '] '+ str(history_dict[key]))
 
-    # Calculate measure(categorical accuracy, precision, recall, f1-score)
-    def calculate_measrue(self, model, X_test, y_test):
-        y_pred_class_prob = model.predict(X_test, batch_size=64)
+    @staticmethod
+    def calculate_measure(self, model, x_test, y_test):
+        """Calculate measure(categorical accuracy, precision, recall, F1-score) """
+
+        y_pred_class_prob = model.predict(x_test, batch_size=64)
         y_pred_class = np.argmax(y_pred_class_prob, axis=1)
         y_true_class = np.argmax(y_test, axis=1)
 
         # classification report(sklearn)
         print(classification_report(y_true_class, y_pred_class, digits=4))
 
-        print ("precision" , metrics.precision_score(y_true_class, y_pred_class, average = 'weighted'))
-        print ("recall" , metrics.recall_score(y_true_class, y_pred_class, average = 'weighted'))
-        print ("f1" , metrics.f1_score(y_true_class, y_pred_class, average = 'weighted'))
+        print("precision" , metrics.precision_score(y_true_class, y_pred_class, average='weighted'))
+        print("recall" , metrics.recall_score(y_true_class, y_pred_class, average='weighted'))
+        print("F1" , metrics.f1_score(y_true_class, y_pred_class, average='weighted'))
 
-
-    # Calculate measure(categorical accuracy, precision, recall, f1-score)
-    def calculate_measure_stacking(self, model, X_test, y_test):
-        X = [X_test for _ in range(len(model.input))]
-        y_pred_class_prob = model.predict(X, verbose=0)
-        y_pred_class = np.argmax(y_pred_class_prob, axis=1)
-        y_true_class = np.argmax(y_test, axis=1)
-
-        # classification report(sklearn)
-        print(classification_report(y_true_class, y_pred_class, digits=4))
-
-        print ("precision" , metrics.precision_score(y_true_class, y_pred_class, average = 'weighted'))
-        print ("recall" , metrics.recall_score(y_true_class, y_pred_class, average = 'weighted'))
-        print ("f1" , metrics.f1_score(y_true_class, y_pred_class, average = 'weighted'))
-
-    # save confusion matrix(.png)
+    @staticmethod
     def plot_confusion_matrix(self, model_name, y_true, y_pred,
                               classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14, 15, 16, 17, 18, 19, 20],
                                normalize=False,
                                title=None,
                                cmap=plt.cm.Blues):
-        dga_labels_dict = {'majestic':0, 'banjori':1, 'tinba':2, 'Post':3, 'ramnit':4, 'qakbot':5, 'necurs':6, 'murofet':7, 'shiotob/urlzone/bebloh':8, 'simda':9,
-                           'ranbyus':10, 'pykspa':11, 'dyre':12, 'kraken':13, 'Cryptolocker':14, 'nymaim':15, 'locky':16, 'vawtrak':17, 'shifu':18,
-                           'ramdo':19, 'P2P':20 }
+        """Save confusion matrix(.png) """
+
+        dga_labels_dict = {'majestic':0, 'banjori':1, 'tinba':2, 'Post':3, 'ramnit':4, 'qakbot':5, 'necurs':6,
+                           'murofet':7, 'shiotob/urlzone/bebloh':8, 'simda':9, 'ranbyus':10, 'pykspa':11,
+                           'dyre':12, 'kraken':13, 'Cryptolocker':14, 'nymaim':15, 'locky':16, 'vawtrak':17,
+                           'shifu':18, 'ramdo':19, 'P2P':20 }
         classes_str = []
         for i in classes:
             for dga_str, dga_int in dga_labels_dict.items():
@@ -101,8 +96,8 @@ class Evaluator:
         misclass = 1 - accuracy
         # Only use the labels that appear in the data
         #classes = list(classes[unique_labels(y_true, y_pred)])
-        if normalize:
 
+        if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             print("Normalized confusion matrix")
         else:
@@ -136,12 +131,12 @@ class Evaluator:
 
         precision = metrics.precision_score(y_true_class, y_pred_class, average = 'weighted')
         recall = metrics.recall_score(y_true_class, y_pred_class, average = 'weighted')
-        f1 = metrics.f1_score(y_true_class, y_pred_class, average = 'weighted')
+        F1 = metrics.f1_score(y_true_class, y_pred_class, average = 'weighted')
 
-        plt.xlabel('Predicted label\naccuracy={:0.4f}; precision={:0.4f}; recall={:0.4f}; f1={:0.4f}; misclass={:0.4f}'
-                   .format(accuracy, precision, recall, f1, misclass))
+        plt.xlabel('Predicted label\naccuracy={:0.4f}; precision={:0.4f}; recall={:0.4f}; F1={:0.4f}; misclass={:0.4f}'
+                   .format(accuracy, precision, recall, F1, misclass))
         now = datetime.now()
-        nowDatetime = now.strftime('%Y_%m_%d-%H%M%S')
+        now_datetime = now.strftime('%Y_%m_%d-%H%M%S')
         figure = plt.gcf()
         figure.set_size_inches(15, 15)
-        plt.savefig('./result/' + model_name + '_confusion_matrix_' + nowDatetime + '.png', dpi=100)
+        plt.savefig('./result/' + model_name + '_confusion_matrix_' + now_datetime + '.png', dpi=100)
