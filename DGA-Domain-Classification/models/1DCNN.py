@@ -84,7 +84,8 @@ with tf.device("/GPU:0"):
 
     # Define early stopping
     es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
-    mc = ModelCheckpoint('./trained_models/' + model_name+ '.h5', monitor='val_loss', mode='min', save_best_only=True)
+    mc = ModelCheckpoint(filepath='./trained_models/' + model_name+ '.hdf5', monitor='val_loss', mode='min',
+                         save_best_only=True, verbose=1)
 
     ''' Training phrase '''
     epochs = 10
