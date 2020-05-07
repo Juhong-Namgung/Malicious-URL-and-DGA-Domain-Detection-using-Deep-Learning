@@ -1,19 +1,18 @@
 # Load Libraries
-
 import warnings
+from datetime import datetime
 
-import model_evaluator
-import model_preprocessor
 import tensorflow as tf
 from keras import backend as K
 from keras import regularizers
 from keras.callbacks import EarlyStopping
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Input, ELU, Embedding, BatchNormalization, Convolution1D, MaxPooling1D, concatenate
-from keras.layers.core import Dense, Dropout, Lambda
+from keras.layers import Input, ELU, Embedding, BatchNormalization, Convolution1D, GlobalMaxPooling1D, concatenate
+from keras.layers.core import Dense, Dropout
 from keras.models import Model
-from keras.models import load_model
 from keras.optimizers import Adam
+from model_evaluator import Evaluator
+from model_preprocessor import Preprocessor
 
 warnings.filterwarnings("ignore")
 config = tf.ConfigProto()
@@ -22,27 +21,22 @@ K.tensorflow_backend.set_session(tf.Session(config=config))
 
 with tf.device("/GPU:0"):
 
-    def conv_fully(max_len=67, emb_dim=32, max_vocab_len=38, W_reg=regularizers.l2(1e-4)):
+    def conv_fully(max_len=67, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
+        """CNN model with the Keras functional API"""
 
         # Input
         main_input = Input(shape=(max_len,), dtype='int32', name='main_input')
 
         # Embedding layer
-        # URL을 int로 변환한 것을 임베딩
         emb = Embedding(input_dim=max_vocab_len, output_dim=emb_dim, input_length=max_len, W_regularizer=W_reg)(main_input)
-        emb = Dropout(0.25)(emb)
-
-        def sum_1d(X):
-            return K.sum(X, axis=1)
+        emb = Dropout(0.5)(emb)
 
         def get_conv_layer(emb, kernel_size=5, filters=256):
             # Conv layer
             conv = Convolution1D(kernel_size=kernel_size, filters=filters, border_mode='same')(emb)
             conv = ELU()(conv)
-            conv = MaxPooling1D(5)(conv)
-            conv = Lambda(sum_1d, output_shape=(filters,))(conv)
+            conv = GlobalMaxPooling1D()(conv)
             conv = Dropout(0.5)(conv)
-
             return conv
 
         # Multiple Conv Layers
@@ -75,22 +69,16 @@ with tf.device("/GPU:0"):
         # 마지막 클래스 결정하는 layer
         output = Dense(21, activation='softmax', name='main_output')(hidden3)
 
-        # Compile model and define optimizer
         model = Model(input=[main_input], output=[output])
-        adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-        model.compile(optimizer=adam, loss='categorical_crossentropy', metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(), preprocess.precision, preprocess.recall, preprocess.fmeasure])
+
         return model
 
 with tf.device("/GPU:0"):
-    epochs = 10
-    batch_size = 64
 
     # Load data using model preprocessor
-    preprocess = model_preprocessor .Preprocessor()
+    x_train, x_test, y_train, y_test = Preprocessor.load_data()
 
-    X_train, X_test, y_train, y_test = preprocess.load_data()
-
-    # Define CNN model
+    # Define Deep Learning Model
     model_name = "1DCNN"
     model = conv_fully()
 
@@ -98,24 +86,44 @@ with tf.device("/GPU:0"):
     es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
     mc = ModelCheckpoint('./trained_models/' + model_name+ '.h5', monitor='val_loss', mode='min', save_best_only=True)
 
-    history = model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.11, callbacks=[es, mc])
+    ''' Training phrase '''
+    epochs = 10
+    batch_size = 64
+    adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
-    saved_model = load_model('./trained_models/' + model_name+ '.h5', compile=False)
-    y_pred = saved_model.predict(X_test, batch_size=64)
+    model.compile(optimizer=adam, loss='categorical_crossentropy',
+                  metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(),
+                           Evaluator.precision, Evaluator.recall, Evaluator.fmeasure])
 
-    evaluator = model_evaluator.Evaluator()
+    dt_start_train = datetime.now()
+
+    history = model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.11, callbacks=[es, mc])
+
+    dt_end_train = datetime.now()
+
+    ''' Predict phrase '''
+    best_model = conv_fully()
+    best_model.load_weights('./trained_models/' + model_name+ '.h5')
+    best_model.compile(optimizer=adam, loss='categorical_crossentropy',
+                       metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(),
+                                Evaluator.precision, Evaluator.recall, Evaluator.fmeasure])
+
+    dt_start_predict = datetime.now()
+
+    y_pred = best_model.predict(x_test, batch_size=64)
+
+    dt_end_predict = datetime.now()
 
     # Validation curves
-    evaluator.plot_validation_curves(model_name, history)
-    evaluator.print_validation_report(history)
+    Evaluator.plot_validation_curves(model_name, history)
+    Evaluator.print_validation_report(history)
 
     # Experimental result
-    evaluator.calculate_measrue(saved_model, X_test, y_test)
+    Evaluator.calculate_measure(best_model, x_test, y_test)
 
     # Save confusion matrix
-    evaluator.plot_confusion_matrix(model_name, y_test, y_pred, title='Confusion matrix', normalize=True)
+    Evaluator.plot_confusion_matrix(model_name, y_test, y_pred, title='Confusion matrix', normalize=True)
 
-    # Save final training model
-    # preprocess.save_model(model, "../models/" + model_name + ".json", "../models/" + model_name + ".h5")
-
-    #model.summary()
+    # Print Training and predicting time
+    print('Train time: ' + str((dt_end_train - dt_start_train)))
+    print('Predict time: ' + str((dt_end_predict - dt_start_predict)))

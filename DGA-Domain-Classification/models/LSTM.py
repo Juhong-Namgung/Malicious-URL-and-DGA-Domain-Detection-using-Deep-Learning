@@ -23,6 +23,8 @@ K.tensorflow_backend.set_session(tf.Session(config=config))
 with tf.device("/GPU:0"):
 
     def lstm(max_len=67, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
+        """LSTM model with the Keras Sequential model"""
+
         model = Sequential()
         model.add(Embedding(input_dim=max_vocab_len, output_dim=emb_dim, input_length=max_len, W_regularizer=W_reg))
         model.add(Dropout(0.5))
@@ -38,7 +40,7 @@ with tf.device("/GPU:0"):
     x_train, x_test, y_train, y_test = Preprocessor.load_data()
 
     # Define Deep Learning Model
-    model_name = "1DCNN"
+    model_name = "LSTM"
     model = lstm()
 
     # Define early stopping
