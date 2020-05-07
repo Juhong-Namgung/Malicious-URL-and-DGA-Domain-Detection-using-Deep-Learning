@@ -4,11 +4,53 @@ from sklearn import metrics
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from datetime import datetime
-
+from keras import backend as K
 
 class Evaluator:
     def __init__(self):
         pass
+
+    '''
+    Training and Evaluation Metrics
+    
+    1) precision
+    2) recall
+    3) F1-score
+        
+    '''
+
+    @staticmethod
+    def precision(self, y_true, y_pred):
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+        precision = true_positives / (predicted_positives + K.epsilon())
+        return precision
+
+    @staticmethod
+    def recall(self, y_true, y_pred):
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+        recall = true_positives / (possible_positives + K.epsilon())
+        return recall
+
+    @staticmethod
+    def fbeta_score(self, y_true, y_pred, beta=1):
+        if beta < 0:
+            raise ValueError('The lowest choosable beta is zero (only precision).')
+
+            # If there are no true positives, fix the F score at 0 like sklearn.
+        if K.sum(K.round(K.clip(y_true, 0, 1))) == 0:
+
+            return 0
+        p = Evaluator.precision(self, y_true, y_pred)
+        r = Evaluator.recall(self, y_true, y_pred)
+        bb = beta ** 2
+        fbeta_score = (1 + bb) * (p * r) / (bb * p + r + K.epsilon())
+        return fbeta_score
+
+    @staticmethod
+    def fmeasure(self, y_true, y_pred):
+        return Evaluator.fbeta_score(self, y_true, y_pred, beta=1)
 
     @staticmethod
     def plot_validation_curves(self, model_name, history):
