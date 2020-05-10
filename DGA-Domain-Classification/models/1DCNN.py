@@ -104,7 +104,7 @@ with tf.device("/GPU:0"):
 
     ''' Predict phrase '''
     best_model = conv_fully()
-    best_model.load_weights('./trained_models/' + model_name+ '.h5')
+    best_model.load_weights('./trained_models/' + model_name+ '.hdf5')
     best_model.compile(optimizer=adam, loss='categorical_crossentropy',
                        metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(),
                                 Evaluator.precision, Evaluator.recall, Evaluator.fmeasure])
