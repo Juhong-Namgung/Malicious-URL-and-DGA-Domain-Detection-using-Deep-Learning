@@ -14,13 +14,16 @@ dga_labels_dict = {'majestic':0, 'banjori':1, 'tinba':2, 'Post':3, 'ramnit':4, '
 dga_labels= []
 dga_labels_str = []
 dga_domains = []
+
+df_dga_source_to_list = df_dga['source'].tolist()
+df_dga_domain_to_list = df_dga['domain'].tolist()
 z = 0
 
 for x in df_dga['source'].tolist():
     if x in dga_labels_dict:
         dga_labels.append(dga_labels_dict[x])
-        dga_labels_str.append(df_dga['source'].tolist()[z])
-        dga_domains.append(df_dga['domain'].tolist()[z])
+        dga_labels_str.append(df_dga_source_to_list[z])
+        dga_domains.append(df_dga_domain_to_list[z])
     z = z + 1
 
 # Data columns("domain", "source", "class")
