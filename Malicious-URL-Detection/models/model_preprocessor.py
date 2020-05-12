@@ -26,7 +26,7 @@ class Preprocessor:
 
         # Load data
         data_home = '../data/'
-        df = pd.read_csv(data_home + 'url_label_sample.csv', encoding='ISO-8859-1', sep=',')
+        df = pd.read_csv(data_home + 'url_label.csv', encoding='ISO-8859-1', sep=',')
 
         # Tokenizing domain string on character level
         # domain string to vector
@@ -73,7 +73,7 @@ class Preprocessor:
 
         # Load data
         data_home = '../data/'
-        df = pd.read_csv(data_home + 'url_label_sample.csv', encoding='ISO-8859-1', sep=',')
+        df = pd.read_csv(data_home + 'url_label.csv', encoding='ISO-8859-1', sep=',')
 
         # Tokenizing domain string on character level
         # domain string to vector
