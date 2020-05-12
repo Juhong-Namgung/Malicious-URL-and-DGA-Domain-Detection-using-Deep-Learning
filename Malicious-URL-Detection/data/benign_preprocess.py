@@ -12,8 +12,7 @@ z = 0
 
 for x in df_benign_train['label'].tolist():
     if x == 'good':
-        # if len(df_benign_train_to_list[z]) < 101:
-        if len(df_benign_train_to_list[z]) < 9:
+        if len(df_benign_train_to_list[z]) < 101:
             benign_urls.append(df_benign_train_to_list[z])
             benign_labels.append(0)
             benign_labels_str.append('benign')
