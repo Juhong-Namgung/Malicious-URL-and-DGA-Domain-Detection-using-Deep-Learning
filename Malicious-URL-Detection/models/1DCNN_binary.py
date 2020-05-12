@@ -97,7 +97,7 @@ with tf.device("/GPU:0"):
     adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
     model.compile(optimizer=adam, loss='binary_crossentropy',
-                  metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(),
+                  metrics=['accuracy', tf.keras.metrics.BinaryAccuracy(),
                            Evaluator.precision, Evaluator.recall, Evaluator.fmeasure])
 
     dt_start_train = datetime.now()
@@ -116,8 +116,6 @@ with tf.device("/GPU:0"):
     dt_start_predict = datetime.now()
 
     y_pred = best_model.predict(x_test, batch_size=64)
-    print("!!!!!!! model의 predict 값")
-    print(y_pred)
 
     dt_end_predict = datetime.now()
 

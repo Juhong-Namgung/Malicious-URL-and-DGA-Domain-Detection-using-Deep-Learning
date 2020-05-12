@@ -60,7 +60,7 @@ with tf.device("/GPU:0"):
     adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
     model.compile(optimizer=adam, loss='binary_crossentropy',
-                  metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(),
+                  metrics=['accuracy', tf.keras.metrics.BinaryAccuracy(),
                            Evaluator.precision, Evaluator.recall, Evaluator.fmeasure])
 
     dt_start_train = datetime.now()
@@ -73,7 +73,7 @@ with tf.device("/GPU:0"):
     best_model = lstm_att()
     best_model.load_weights('./trained_models/' + model_name+ '.hdf5')
     best_model.compile(optimizer=adam, loss='binary_crossentropy',
-                       metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(),
+                       metrics=['accuracy', tf.keras.metrics.BinaryAccuracy(),
                                 Evaluator.precision, Evaluator.recall, Evaluator.fmeasure])
 
     dt_start_predict = datetime.now()
