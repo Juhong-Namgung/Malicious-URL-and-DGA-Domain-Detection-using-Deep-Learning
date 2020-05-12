@@ -53,7 +53,7 @@ class Evaluator:
         return Evaluator.fbeta_score(y_true, y_pred, beta=1)
 
     @staticmethod
-    def plot_validation_curves(model_name, history):
+    def plot_validation_curves(model_name, history, type='multi'):
         """Save validation curves(.png format) """
 
         history_dict = history.history
@@ -65,7 +65,10 @@ class Evaluator:
         plt.plot(epochs, history_dict['val_fmeasure'], 'r',label='F1')
         plt.plot(epochs, history_dict['val_precision'], 'g',label='precision')
         plt.plot(epochs, history_dict['val_recall'], 'k',label='recall')
-        plt.plot(epochs, history_dict['val_categorical_accuracy'], 'c', label='categorical_accuracy')
+        if type == 'multi':
+            plt.plot(epochs, history_dict['val_categorical_accuracy'], 'c', label='categorical_accuracy')
+        else :
+            plt.plot(epochs, history_dict['val_binary_accuracy'], 'c', label='binary_accuracy')
 
         plt.xlabel('Epochs')
         plt.grid()

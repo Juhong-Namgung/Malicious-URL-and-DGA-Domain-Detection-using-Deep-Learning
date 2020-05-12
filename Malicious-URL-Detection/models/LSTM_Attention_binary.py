@@ -83,7 +83,7 @@ with tf.device("/GPU:0"):
     dt_end_predict = datetime.now()
 
     # Validation curves
-    Evaluator.plot_validation_curves(model_name, history)
+    Evaluator.plot_validation_curves(model_name, history, type='binary' )
     Evaluator.print_validation_report(history)
 
     # Experimental result

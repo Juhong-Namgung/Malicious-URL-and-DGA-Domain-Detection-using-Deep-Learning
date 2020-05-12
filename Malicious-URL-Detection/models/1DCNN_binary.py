@@ -110,7 +110,7 @@ with tf.device("/GPU:0"):
     best_model = conv_fully()
     best_model.load_weights('./trained_models/' + model_name+ '.hdf5')
     best_model.compile(optimizer=adam, loss='binary_crossentropy',
-                       metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(),
+                       metrics=['accuracy', tf.keras.metrics.BinaryAccuracy(),
                                 Evaluator.precision, Evaluator.recall, Evaluator.fmeasure])
 
     dt_start_predict = datetime.now()
@@ -120,7 +120,7 @@ with tf.device("/GPU:0"):
     dt_end_predict = datetime.now()
 
     # Validation curves
-    Evaluator.plot_validation_curves(model_name, history)
+    Evaluator.plot_validation_curves(model_name, history, type='binary')
     Evaluator.print_validation_report(history)
 
     # Experimental result
