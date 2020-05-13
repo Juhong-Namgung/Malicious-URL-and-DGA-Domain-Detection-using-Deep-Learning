@@ -33,8 +33,6 @@ class Preprocessor:
         tokenizer.fit_on_texts(df.domain)
         url_int_tokens = tokenizer.texts_to_sequences(df.domain)
 
-        print(tokenizer.word_index)
-
         # Padding domain integer max_len=64
         # 최대길이 73으로 지정
         max_len = 73
@@ -50,5 +48,3 @@ class Preprocessor:
         y_test_category = np_utils.to_categorical(y_test, 21)
 
         return x_train, x_test, y_train_category, y_test_category
-
-Preprocessor.load_data()
