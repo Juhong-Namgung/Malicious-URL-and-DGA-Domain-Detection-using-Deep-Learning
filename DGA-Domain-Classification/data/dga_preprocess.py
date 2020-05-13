@@ -2,10 +2,10 @@ import pandas as pd
 from sklearn.utils import shuffle
 
 df_dga = pd.read_csv("./dga_feed.csv")
-df_non_dga = pd.read_csv("./majestic_million.csv")
+df_non_dga = pd.read_csv("./top-1m.csv")
 
 # DGA labels(include non-DGA)
-dga_labels_dict = {'majestic':0, 'banjori':1, 'tinba':2, 'Post':3, 'ramnit':4, 'qakbot':5, 'necurs':6, 'murofet':7, 'shiotob/urlzone/bebloh':8, 'simda':9,
+dga_labels_dict = {'alexa':0, 'banjori':1, 'tinba':2, 'Post':3, 'ramnit':4, 'qakbot':5, 'necurs':6, 'murofet':7, 'shiotob/urlzone/bebloh':8, 'simda':9,
                    'ranbyus':10, 'pykspa':11, 'dyre':12, 'kraken':13, 'Cryptolocker':14, 'nymaim':15, 'locky':16, 'vawtrak':17, 'shifu':18,
                    'ramdo':19, 'P2P':20 }
 
@@ -32,14 +32,14 @@ dga_archive['domain'] = dga_domains
 dga_archive['source'] = dga_labels_str
 dga_archive['class'] = dga_labels
 
-# Process non-DGA(majestic) data
-non_dga_domains = df_non_dga['Domain'].tolist()
+# Process non-DGA(alexa) data
+non_dga_domains = df_non_dga['domain'].tolist()
 non_dga_labels = []
 non_dga_labels_str = []
 
 for x in non_dga_domains:
     non_dga_labels.append(0)
-    non_dga_labels_str.append("majestic")
+    non_dga_labels_str.append("alexa")
 
 non_dga_archive = pd.DataFrame(columns=['domain'])
 non_dga_archive['domain'] = non_dga_domains
