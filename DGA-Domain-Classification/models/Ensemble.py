@@ -37,7 +37,7 @@ with tf.device("/GPU:0"):
 
         # Embedding layer
         emb = Embedding(input_dim=max_vocab_len, output_dim=emb_dim, input_length=max_len, W_regularizer=W_reg)(main_input)
-        emb = Dropout(0.5)(emb)
+        emb = Dropout(0.2)(emb)
 
         conv2 = get_conv_layer(emb, kernel_size=2, filters=256)
         conv3 = get_conv_layer(emb, kernel_size=3, filters=256)
