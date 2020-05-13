@@ -25,7 +25,7 @@ K.tensorflow_backend.set_session(tf.Session(config=config))
 
 with tf.device("/GPU:0"):
 
-    def bilstm_att(max_len=67, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
+    def bilstm_att(max_len=73, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
         """BiLSTM with Attention model with the Keras Sequential model"""
 
         model = Sequential()

@@ -21,7 +21,7 @@ K.tensorflow_backend.set_session(tf.Session(config=config))
 
 with tf.device("/GPU:0"):
 
-    def conv_fully(max_len=67, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
+    def conv_fully(max_len=73, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
         """CNN model with the Keras functional API"""
 
         # Input
