@@ -31,7 +31,7 @@ with tf.device("/GPU:0"):
         conv = Dropout(0.5)(conv)
         return conv
 
-    def cnn_bilstm_att(max_len=67, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
+    def cnn_bilstm_att(max_len=73, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
         # Input
         main_input = Input(shape=(max_len,), dtype='int32', name='main_input')
 
