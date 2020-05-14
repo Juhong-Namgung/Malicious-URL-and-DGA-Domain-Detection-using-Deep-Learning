@@ -7,7 +7,7 @@ from keras import backend as K
 from keras import regularizers
 from keras.callbacks import EarlyStopping
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Bidirectional, GRU
+from keras.layers import Bidirectional, LSTM
 from keras.layers import Input, ELU, Embedding, BatchNormalization, Convolution1D, MaxPooling1D, concatenate
 from keras.layers.core import Dense, Dropout, Flatten
 from keras.models import Model
@@ -44,18 +44,19 @@ with tf.device("/GPU:0"):
         conv4 = get_conv_layer(emb, kernel_size=4, filters=256)
         conv5 = get_conv_layer(emb, kernel_size=5, filters=256)
 
-        bigru = Bidirectional(GRU(units=128, return_sequences=True))(emb)
+        bilstm = Bidirectional(LSTM(units=128, return_sequences=True))(emb)
 
-        att = SeqSelfAttention(attention_activation='relu')(bigru)
+        att = SeqSelfAttention(attention_activation='relu')(bilstm)
 
         cnnlstm_merged = concatenate([conv2, conv3, conv4, conv5, att], axis=1)
         cnnlstm_merged = Flatten()(cnnlstm_merged)
 
-        hidden1 = Dense(4128)(cnnlstm_merged)
+        hidden1 = Dense(8256)(cnnlstm_merged)
+        hidden1 = ELU()(hidden1)
         hidden1 = BatchNormalization(mode=0)(hidden1)
         hidden1 = Dropout(0.5)(hidden1)
 
-        hidden2 = Dense(1024)(hidden1)
+        hidden2 = Dense(4128)(hidden1)
         hidden2 = ELU()(hidden2)
         hidden2 = BatchNormalization(mode=0)(hidden2)
         hidden2 = Dropout(0.5)(hidden2)
@@ -73,7 +74,7 @@ with tf.device("/GPU:0"):
     x_train, x_test, y_train, y_test = Preprocessor.load_data()
 
     # Define Deep Learning Model
-    model_name = "ENSEMBLE_CNN_BIGRU"
+    model_name = "ENSEMBLE_CNN_BILSTM"
     model = cnn_bilstm_att()
     model.summary()
     # Define early stopping
