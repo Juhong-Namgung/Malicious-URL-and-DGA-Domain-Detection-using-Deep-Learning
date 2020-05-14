@@ -52,6 +52,7 @@ with tf.device("/GPU:0"):
         cnnlstm_merged = Flatten()(cnnlstm_merged)
 
         hidden1 = Dense(4128)(cnnlstm_merged)
+        hidden1 = ELU()(hidden1)
         hidden1 = BatchNormalization(mode=0)(hidden1)
         hidden1 = Dropout(0.5)(hidden1)
 
