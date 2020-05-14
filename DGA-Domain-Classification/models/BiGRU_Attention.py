@@ -24,12 +24,12 @@ K.tensorflow_backend.set_session(tf.Session(config=config))
 
 with tf.device("/GPU:0"):
 
-    def bigru_att(max_len=67, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
+    def bigru_att(max_len=73, emb_dim=32, max_vocab_len=39, W_reg=regularizers.l2(1e-4)):
         """BiGRU with Attention model with the Keras Sequential model"""
 
         model = Sequential()
         model.add(Embedding(input_dim=max_vocab_len, output_dim=emb_dim, input_length=max_len, W_regularizer=W_reg))
-        model.add(Dropout(0.5))
+        model.add(Dropout(0.2))
         model.add(Bidirectional(GRU(units=128, return_sequences=True)))
         model.add(Dropout(0.5))
         model.add(SeqSelfAttention(attention_activation='relu'))
