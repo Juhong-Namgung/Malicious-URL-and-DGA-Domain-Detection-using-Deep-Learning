@@ -94,20 +94,14 @@ class Evaluator:
         """Calculate measure(categorical accuracy, precision, recall, F1-score) """
 
         y_pred_class_prob = model.predict(x_test, batch_size=64, verbose=0)
-        y_pred_class = []
+        y_pred_class = (y_pred_class_prob >= 0.5).astype(np.int)
 
-        for i in y_pred_class_prob:
-            if i > 0.5:
-                y_pred_class.append(1)
-            else :
-                y_pred_class.append(0)
-
-        y_pred_class = np.argmax(y_pred_class_prob, axis=1)
         y_true_class = y_test
 
         # classification report(sklearn)
         print(classification_report(y_true_class, y_pred_class, digits=4))
 
+        print('accuracy', metrics.accuracy_score(y_true_class, y_pred_class))
         print("precision" , metrics.precision_score(y_true_class, y_pred_class, average='weighted'))
         print("recall" , metrics.recall_score(y_true_class, y_pred_class, average='weighted'))
         print("F1" , metrics.f1_score(y_true_class, y_pred_class, average='weighted'))
@@ -148,11 +142,9 @@ class Evaluator:
                 for dga_str, dga_int in dga_labels_dict.items():
                     if dga_int == i:
                         classes_str.append(dga_str)
-        print("#####################")
-        print(y_pred)
-        print(np.argmax(y_pred, axis=1))
+
         if len(classes) == 2:
-            y_pred_class = np.argmax(y_pred, axis=1)
+            y_pred_class = (y_pred >= 0.5).astype(np.int)
             y_true_class = y_true
         else :
             y_pred_class = np.argmax(y_pred, axis=1)

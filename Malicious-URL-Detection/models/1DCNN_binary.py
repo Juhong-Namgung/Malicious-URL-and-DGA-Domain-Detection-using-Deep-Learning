@@ -13,6 +13,7 @@ from keras.models import Model
 from keras.optimizers import Adam
 from model_evaluator import Evaluator
 from model_preprocessor import Preprocessor
+import time
 
 warnings.filterwarnings("ignore")
 config = tf.ConfigProto()
@@ -29,7 +30,7 @@ with tf.device("/GPU:0"):
 
         # Embedding layer
         emb = Embedding(input_dim=max_vocab_len, output_dim=emb_dim, input_length=max_len, W_regularizer=W_reg)(main_input)
-        emb = Dropout(0.5)(emb)
+        emb = Dropout(0.2)(emb)
 
         def sum_1d(X):
             return K.sum(X, axis=1)
@@ -124,10 +125,19 @@ with tf.device("/GPU:0"):
     Evaluator.print_validation_report(history)
 
     # Experimental result
+    result = best_model.evaluate(x_test, y_test, batch_size=64)
+    result_dic = dict(zip(best_model.metrics_names, result))
+
+    print('\nAccuracy: {}\n Binary_Accuracy: {}\n '
+          'Precision: {}\n Recall: {}\n F-1 Score {}\n'
+          .format(result_dic['accuracy'], result_dic['binary_accuracy'],
+                  result_dic['precision'], result_dic['recall'], result_dic['fmeasure']))
+
     Evaluator.calculate_measure_binary(best_model, x_test, y_test)
 
     # Save confusion matrix
     Evaluator.plot_confusion_matrix(model_name, y_test, y_pred, title='Confusion matrix', normalize=False, classes=[0,1])
+    time.sleep(5)
     Evaluator.plot_confusion_matrix(model_name, y_test, y_pred, title='Confusion matrix', normalize=True, classes=[0,1])
 
     # Print Training and predicting time
