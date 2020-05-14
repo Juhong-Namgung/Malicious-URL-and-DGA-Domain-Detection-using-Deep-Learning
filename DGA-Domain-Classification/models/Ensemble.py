@@ -51,16 +51,11 @@ with tf.device("/GPU:0"):
         cnnlstm_merged = concatenate([conv2, conv3, conv4, conv5, att], axis=1)
         cnnlstm_merged = Flatten()(cnnlstm_merged)
 
-        hidden1 = Dense(8576)(cnnlstm_merged)
+        hidden1 = Dense(8256)(cnnlstm_merged)
         hidden1 = BatchNormalization(mode=0)(hidden1)
         hidden1 = Dropout(0.5)(hidden1)
 
-        hidden2 = Dense(1024)(hidden1)
-        hidden2 = ELU()(hidden2)
-        hidden2 = BatchNormalization(mode=0)(hidden2)
-        hidden2 = Dropout(0.5)(hidden2)
-
-        hidden2 = Dense(256)(hidden1)
+        hidden2 = Dense(4128)(hidden1)
         hidden2 = ELU()(hidden2)
         hidden2 = BatchNormalization(mode=0)(hidden2)
         hidden2 = Dropout(0.5)(hidden2)
