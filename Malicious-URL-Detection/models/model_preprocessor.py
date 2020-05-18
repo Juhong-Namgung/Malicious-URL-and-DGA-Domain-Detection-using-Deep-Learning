@@ -40,7 +40,7 @@ class Preprocessor:
         # url_int_tokens = tokenizer.texts_to_sequences(df.url)
 
         # Padding domain integer max_len=64
-        # 최대길이 67로 지정
+        # 최대길이 80으로 지정
         max_len = 80
 
         x = sequence.pad_sequences(url_int_tokens, maxlen=max_len)
@@ -87,7 +87,7 @@ class Preprocessor:
         # url_int_tokens = tokenizer.texts_to_sequences(df.url)
 
         # Padding domain integer max_len=64
-        # 최대길이 80로 지정
+        # 최대길이 80으로 지정
         max_len = 80
 
         x = sequence.pad_sequences(url_int_tokens, maxlen=max_len)

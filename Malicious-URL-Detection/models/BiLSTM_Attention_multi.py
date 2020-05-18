@@ -29,7 +29,7 @@ with tf.device("/GPU:0"):
 
         model = Sequential()
         model.add(Embedding(input_dim=max_vocab_len, output_dim=emb_dim, input_length=max_len, W_regularizer=W_reg))
-        model.add(Dropout(0.5))
+        model.add(Dropout(0.2))
         model.add(Bidirectional(LSTM(units=128, return_sequences=True)))
         model.add(Dropout(0.5))
         model.add(SeqSelfAttention(attention_activation='relu'))
