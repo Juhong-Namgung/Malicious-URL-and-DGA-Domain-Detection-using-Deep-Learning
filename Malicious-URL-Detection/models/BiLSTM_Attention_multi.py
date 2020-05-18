@@ -24,8 +24,8 @@ K.tensorflow_backend.set_session(tf.Session(config=config))
 
 with tf.device("/GPU:0"):
 
-    def lstm_att(max_len=80, emb_dim=32, max_vocab_len=128, W_reg=regularizers.l2(1e-4)):
-        """LSTM with Attention model with the Keras Sequential model"""
+    def bilstm_att(max_len=80, emb_dim=32, max_vocab_len=128, W_reg=regularizers.l2(1e-4)):
+        """BiLSTM with Attention model with the Keras Sequential model"""
 
         model = Sequential()
         model.add(Embedding(input_dim=max_vocab_len, output_dim=emb_dim, input_length=max_len, W_regularizer=W_reg))
@@ -47,7 +47,7 @@ with tf.device("/GPU:0"):
 
     # Define Deep Learning Model
     model_name = "BILSTM_ATT_MULTI"
-    model = lstm_att()
+    model = bilstm_att()
 
     # Define early stopping
     es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
@@ -70,7 +70,7 @@ with tf.device("/GPU:0"):
     dt_end_train = datetime.now()
 
     ''' Predict phrase '''
-    best_model = lstm_att()
+    best_model = bilstm_att()
     best_model.load_weights('./trained_models/' + model_name+ '.hdf5')
     best_model.compile(optimizer=adam, loss='categorical_crossentropy',
                        metrics=['accuracy', tf.keras.metrics.CategoricalAccuracy(),
