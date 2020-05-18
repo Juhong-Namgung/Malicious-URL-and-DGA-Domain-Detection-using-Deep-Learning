@@ -69,7 +69,7 @@ with tf.device("/GPU:0"):
     dt_end_train = datetime.now()
 
     ''' Predict phrase '''
-    best_model = lstm_att()
+    best_model = bilstm_att()
     best_model.load_weights('./trained_models/' + model_name+ '.hdf5')
     best_model.compile(optimizer=adam, loss='binary_crossentropy',
                        metrics=['accuracy', tf.keras.metrics.BinaryAccuracy(),
