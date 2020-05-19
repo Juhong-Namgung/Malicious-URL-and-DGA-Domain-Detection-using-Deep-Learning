@@ -74,10 +74,10 @@ with tf.device("/GPU:0"):
 with tf.device("/GPU:0"):
 
     # Load data using model preprocessor
-    x_train, x_test, y_train, y_test = Preprocessor.load_data_binary()
+    x_train, x_test, y_train, y_test = Preprocessor.load_data_multi()
 
     # Define Deep Learning Model
-    model_name = "ENSEMBLE_CNN_BILSTM_BI"
+    model_name = "ENSEMBLE_CNN_BILSTM_MULTI"
     model = cnn_bilstm_att()
 
     # Define early stopping
