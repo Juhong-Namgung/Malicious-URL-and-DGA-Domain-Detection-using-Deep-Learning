@@ -89,8 +89,8 @@ with tf.device("/GPU:0"):
     result = best_model.evaluate(x_test, y_test, batch_size=64)
     result_dic = dict(zip(best_model.metrics_names, result))
 
-    print('\nAccuracy: {}\n Binary_Accuracy: {}\n '
-          'Precision: {}\n Recall: {}\n F-1 Score {}\n'
+    print('\nAccuracy: {}\n Binary_Accuracy: {}\n'
+          'Precision: {}\nRecall: {}\n F-1Score {}\n'
           .format(result_dic['accuracy'], result_dic['binary_accuracy'],
                   result_dic['precision'], result_dic['recall'], result_dic['fmeasure']))
 
