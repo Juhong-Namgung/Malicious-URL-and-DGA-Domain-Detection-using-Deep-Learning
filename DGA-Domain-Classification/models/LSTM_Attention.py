@@ -34,7 +34,7 @@ with tf.device("/GPU:0"):
         model.add(Dropout(0.5))
         model.add(SeqSelfAttention(attention_activation='relu'))
         model.add(Flatten())
-        model.add(Dense(8576, activation='relu'))
+        model.add(Dense(9344, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Dense(21, activation='softmax'))
 
