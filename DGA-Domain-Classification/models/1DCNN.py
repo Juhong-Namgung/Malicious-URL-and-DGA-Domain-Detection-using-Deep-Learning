@@ -7,8 +7,8 @@ from keras import backend as K
 from keras import regularizers
 from keras.callbacks import EarlyStopping
 from keras.callbacks import ModelCheckpoint
-from keras.layers import Input, ELU, Embedding, BatchNormalization, Convolution1D, GlobalMaxPooling1D, concatenate
-from keras.layers.core import Dense, Dropout
+from keras.layers import Input, ELU, Embedding, BatchNormalization, Convolution1D, MaxPooling1D, concatenate
+from keras.layers.core import Dense, Dropout, Lambda
 from keras.models import Model
 from keras.optimizers import Adam
 from model_evaluator import Evaluator
@@ -31,12 +31,17 @@ with tf.device("/GPU:0"):
         emb = Embedding(input_dim=max_vocab_len, output_dim=emb_dim, input_length=max_len, W_regularizer=W_reg)(main_input)
         emb = Dropout(0.2)(emb)
 
+        def sum_1d(X):
+            return K.sum(X, axis=1)
+
         def get_conv_layer(emb, kernel_size=5, filters=256):
             # Conv layer
             conv = Convolution1D(kernel_size=kernel_size, filters=filters, border_mode='same')(emb)
             conv = ELU()(conv)
-            conv = GlobalMaxPooling1D()(conv)
+            conv = MaxPooling1D()(conv)
+            conv = Lambda(sum_1d, output_shape=(filters,))(conv)
             conv = Dropout(0.5)(conv)
+
             return conv
 
         # Multiple Conv Layers
