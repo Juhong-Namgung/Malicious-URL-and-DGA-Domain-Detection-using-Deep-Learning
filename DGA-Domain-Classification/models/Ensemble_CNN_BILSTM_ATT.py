@@ -78,7 +78,6 @@ with tf.device("/GPU:0"):
     model = cnn_bilstm_att()
     model.summary()
     # Define early stopping
-    es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
     mc = ModelCheckpoint(filepath='./trained_models/' + model_name+ '.hdf5', monitor='val_loss', mode='min',
                          save_best_only=True, verbose=1)
 
@@ -93,7 +92,7 @@ with tf.device("/GPU:0"):
 
     dt_start_train = datetime.now()
 
-    history = model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.11, callbacks=[es, mc])
+    history = model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.11, callbacks=[mc])
 
     dt_end_train = datetime.now()
 
