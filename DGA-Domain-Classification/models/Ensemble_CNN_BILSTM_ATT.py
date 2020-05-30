@@ -44,7 +44,7 @@ with tf.device("/GPU:0"):
         conv4 = get_conv_layer(emb, kernel_size=4, filters=256)
         conv5 = get_conv_layer(emb, kernel_size=5, filters=256)
 
-        bilstm = Bidirectional(LSTM(units=128, return_sequences=True))(emb)
+        bilstm = Bidirectional(LSTM(units=128, return_sequences=True, dropout=0.2))(emb)
 
         att = SeqSelfAttention(attention_activation='relu')(bilstm)
 
