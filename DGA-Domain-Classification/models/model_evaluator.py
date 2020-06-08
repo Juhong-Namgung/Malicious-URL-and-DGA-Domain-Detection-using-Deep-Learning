@@ -109,7 +109,7 @@ class Evaluator:
                                cmap=plt.cm.Blues):
         """Save confusion matrix(.png) """
 
-        dga_labels_dict = {'majestic':0, 'banjori':1, 'tinba':2, 'Post':3, 'ramnit':4, 'qakbot':5, 'necurs':6,
+        dga_labels_dict = {'Alexa':0, 'banjori':1, 'tinba':2, 'Post':3, 'ramnit':4, 'qakbot':5, 'necurs':6,
                            'murofet':7, 'shiotob/urlzone/bebloh':8, 'simda':9, 'ranbyus':10, 'pykspa':11,
                            'dyre':12, 'kraken':13, 'Cryptolocker':14, 'nymaim':15, 'locky':16, 'vawtrak':17,
                            'shifu':18, 'ramdo':19, 'P2P':20 }
