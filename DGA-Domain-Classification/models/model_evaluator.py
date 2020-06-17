@@ -101,6 +101,10 @@ class Evaluator:
         print("recall" , metrics.recall_score(y_true_class, y_pred_class, average='weighted'))
         print("F1" , metrics.f1_score(y_true_class, y_pred_class, average='weighted'))
 
+        print("precision" , metrics.precision_score(y_true_class, y_pred_class, average='micro'))
+        print("recall" , metrics.recall_score(y_true_class, y_pred_class, average='micro'))
+        print("F1" , metrics.f1_score(y_true_class, y_pred_class, average='micro'))
+
     @staticmethod
     def plot_confusion_matrix(model_name, y_true, y_pred,
                               classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14, 15, 16, 17, 18, 19, 20],
